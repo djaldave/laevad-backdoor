@@ -77,7 +77,7 @@ def server():
 	# ipv4 run over tcp
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	s.bind(("192.168.88.19",54321))
+	s.bind(("192.168.88.103",54321))
 	s.listen(5) # connection
 	print("listening for incoming connection")
 	target , ip = s.accept() # accept the connection

